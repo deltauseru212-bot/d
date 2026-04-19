@@ -1,5 +1,5 @@
 --[[
-    🚀 ULTRA DELTAKIDD HUB V2.3 - NO RAYFIELD (Clean Native GUI)
+    🚀 ULTRA DELTAKIDD HUB V2.3 - NO RAYFIELD (Fixed setclipboard)
     CREATED BY: DELTAKIDD
 ]]
 
@@ -11,14 +11,25 @@ local DEFAULT_REMOTE_PATH = "ReplicatedStorage.Remotes.BuyItem"   -- ← CHANGE 
 
 local State = {
     LastRemote = nil,
-    Spamming = false,
-    DecalSpamming = false,
-    UseRawID = false,
     Logging = false,
     CustomPayload = "",
     TargetDecal = "107499863497854",
     SpyLogs = {}
 }
+
+-- ====================== SETCLIPBOARD FIX ======================
+local function setClipboard(text)
+    if setclipboard then
+        setclipboard(text)
+    elseif syn and syn.write_clipboard then
+        syn.write_clipboard(text)
+    elseif clipboard then
+        clipboard(text)
+    else
+        print("Clipboard not supported on this executor")
+    end
+end
+-- ============================================================
 
 -- Create GUI
 local ScreenGui = Instance.new("ScreenGui")
@@ -43,7 +54,7 @@ Title.TextSize = 22
 Title.Font = Enum.Font.GothamBold
 Title.Parent = MainFrame
 
--- Enable Scanner
+-- Scanner Toggle
 local ToggleBtn = Instance.new("TextButton")
 ToggleBtn.Size = UDim2.new(0.9, 0, 0, 50)
 ToggleBtn.Position = UDim2.new(0.05, 0, 0, 80)
@@ -54,7 +65,7 @@ ToggleBtn.TextSize = 18
 ToggleBtn.Font = Enum.Font.GothamBold
 ToggleBtn.Parent = MainFrame
 
--- Scrolling Log
+-- Log Area
 local Scrolling = Instance.new("ScrollingFrame")
 Scrolling.Size = UDim2.new(0.9, 0, 0, 320)
 Scrolling.Position = UDim2.new(0.05, 0, 0, 150)
@@ -74,7 +85,7 @@ LogLabel.TextSize = 15
 LogLabel.Font = Enum.Font.Gotham
 LogLabel.Parent = Scrolling
 
--- Buttons
+-- Copy Buttons
 local CopyLatestBtn = Instance.new("TextButton")
 CopyLatestBtn.Size = UDim2.new(0.42, 0, 0, 45)
 CopyLatestBtn.Position = UDim2.new(0.05, 0, 0, 490)
@@ -137,7 +148,6 @@ local oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
             table.insert(State.SpyLogs, 1, entry)
             if #State.SpyLogs > 60 then table.remove(State.SpyLogs) end
 
-            -- Update GUI
             local text = ""
             for _, log in ipairs(State.SpyLogs) do
                 text = text .. "🕒 " .. log.Time .. " | " .. log.RemoteName .. "\n📂 " .. log.FullPath .. "\n📊 " .. log.ArgsStr .. "\n\n"
@@ -158,7 +168,7 @@ end)
 
 CopyLatestBtn.MouseButton1Click:Connect(function()
     if #State.SpyLogs > 0 then
-        setclipboard(State.SpyLogs[1].FireLine)
+        setClipboard(State.SpyLogs[1].FireLine)
     end
 end)
 
@@ -168,7 +178,7 @@ CopyAllBtn.MouseButton1Click:Connect(function()
         all = all .. log.FireLine .. "\n\n"
     end
     if all ~= "" then
-        setclipboard(all)
+        setClipboard(all)
     end
 end)
 
@@ -187,4 +197,4 @@ InjectBtn.MouseButton1Click:Connect(function()
     pcall(function() State.LastRemote:FireServer(unpack(args)) end)
 end)
 
-print("ULTRA DELTAKIDD HUB V2.3 LOADED - Native GUI")
+print("ULTRA DELTAKIDD HUB V2.3 LOADED - setclipboard fixed")
