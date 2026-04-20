@@ -1,22 +1,18 @@
 --[[
-    🚀 ULTRA DELTAKIDD HUB V2.4 - PC + MOBILE COMPATIBLE
+    🚀 ULTRA DELTAKIDD HUB V2.4 - PC + MOBILE (Fixed)
     CREATED BY: DELTAKIDD
 ]]
 
--- =============================================
--- CHANGE THIS TO YOUR DEFAULT REMOTE PATH
--- =============================================
-local DEFAULT_REMOTE_PATH = "ReplicatedStorage.Remotes.BuyItem"   -- ← CHANGE THIS
--- =============================================
+local DEFAULT_REMOTE_PATH = "ReplicatedStorage.Remotes.BuyItem"
 
 local State = {
     LastRemote = nil,
     Logging = false,
     CustomPayload = "",
-    TargetDecal = "107499863497854",
     SpyLogs = {}
 }
 
+-- FIXED setClipboard
 local function setClipboard(text)
     if setclipboard then
         setclipboard(text)
@@ -25,13 +21,12 @@ local function setClipboard(text)
     elseif clipboard then
         clipboard(text)
     else
-        print("Clipboard not supported")
+        print("Clipboard not supported on this executor")
     end
 end
 
--- Create GUI
+-- GUI
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "DeltaKiddHub"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
@@ -40,8 +35,7 @@ MainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 80)
 MainFrame.BorderSizePixel = 4
 MainFrame.BorderColor3 = Color3.fromRGB(255, 0, 0)
 
--- Auto adjust size for PC vs Mobile
-local isMobile = game:GetService("UserInputService").TouchEnabled and not game:GetService("UserInputService").KeyboardEnabled
+local isMobile = game:GetService("UserInputService").TouchEnabled
 
 if isMobile then
     MainFrame.Size = UDim2.new(0.95, 0, 0.88, 0)
@@ -97,7 +91,6 @@ CopyLatestBtn.Position = UDim2.new(0.025, 0, 0, isMobile and 400 or 470)
 CopyLatestBtn.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
 CopyLatestBtn.Text = "COPY LATEST"
 CopyLatestBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-CopyLatestBtn.TextSize = isMobile and 15 or 16
 CopyLatestBtn.Parent = MainFrame
 
 local CopyAllBtn = Instance.new("TextButton")
@@ -106,16 +99,14 @@ CopyAllBtn.Position = UDim2.new(0.515, 0, 0, isMobile and 400 or 470)
 CopyAllBtn.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
 CopyAllBtn.Text = "COPY ALL LOGS"
 CopyAllBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-CopyAllBtn.TextSize = isMobile and 15 or 16
 CopyAllBtn.Parent = MainFrame
 
 local PayloadBox = Instance.new("TextBox")
 PayloadBox.Size = UDim2.new(0.95, 0, 0, 50)
 PayloadBox.Position = UDim2.new(0.025, 0, 0, isMobile and 460 or 530)
-PayloadBox.PlaceholderText = "Enter payload (Sword, 100, true...)"
+PayloadBox.PlaceholderText = "Enter payload here..."
 PayloadBox.BackgroundColor3 = Color3.fromRGB(0, 0, 60)
 PayloadBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-PayloadBox.TextSize = isMobile and 15 or 16
 PayloadBox.Parent = MainFrame
 
 local InjectBtn = Instance.new("TextButton")
@@ -124,7 +115,6 @@ InjectBtn.Position = UDim2.new(0.025, 0, 0, isMobile and 520 or 590)
 InjectBtn.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
 InjectBtn.Text = "SINGLE INJECT"
 InjectBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-InjectBtn.TextSize = isMobile and 16 or 18
 InjectBtn.Parent = MainFrame
 
 -- Auto set remote
@@ -166,7 +156,7 @@ local oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
     return oldNamecall(self, ...)
 end)
 
--- Button Connections
+-- Buttons
 ToggleBtn.MouseButton1Click:Connect(function()
     State.Logging = not State.Logging
     ToggleBtn.Text = State.Logging and "SCANNER ENABLED ✓" or "ENABLE LIVE ARG SCANNER"
@@ -174,9 +164,7 @@ ToggleBtn.MouseButton1Click:Connect(function()
 end)
 
 CopyLatestBtn.MouseButton1Click:Connect(function()
-    if #State.SpyLogs > 0 then
-        setClipboard(State.SpyLogs[1].FireLine)
-    end
+    if #State.SpyLogs > 0 then setClipboard(State.SpyLogs[1].FireLine) end
 end)
 
 CopyAllBtn.MouseButton1Click:Connect(function()
@@ -184,9 +172,7 @@ CopyAllBtn.MouseButton1Click:Connect(function()
     for _, log in ipairs(State.SpyLogs) do
         all = all .. log.FireLine .. "\n\n"
     end
-    if all ~= "" then
-        setClipboard(all)
-    end
+    if all ~= "" then setClipboard(all) end
 end)
 
 InjectBtn.MouseButton1Click:Connect(function()
@@ -204,4 +190,4 @@ InjectBtn.MouseButton1Click:Connect(function()
     pcall(function() State.LastRemote:FireServer(unpack(args)) end)
 end)
 
-print("ULTRA DELTAKIDD HUB V2.4 LOADED - PC + Mobile Compatible")
+print("ULTRA DELTAKIDD HUB V2.4 LOADED")
