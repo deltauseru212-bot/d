@@ -1,5 +1,5 @@
 --[[
-    🚀 ULTRA DELTAKIDD HUB V2.3 - NO RAYFIELD (Fixed setclipboard)
+    🚀 ULTRA DELTAKIDD HUB V2.4 - PC + MOBILE COMPATIBLE
     CREATED BY: DELTAKIDD
 ]]
 
@@ -17,7 +17,6 @@ local State = {
     SpyLogs = {}
 }
 
--- ====================== SETCLIPBOARD FIX ======================
 local function setClipboard(text)
     if setclipboard then
         setclipboard(text)
@@ -26,10 +25,9 @@ local function setClipboard(text)
     elseif clipboard then
         clipboard(text)
     else
-        print("Clipboard not supported on this executor")
+        print("Clipboard not supported")
     end
 end
--- ============================================================
 
 -- Create GUI
 local ScreenGui = Instance.new("ScreenGui")
@@ -38,86 +36,95 @@ ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
 local MainFrame = Instance.new("Frame")
-MainFrame.Size = UDim2.new(0, 700, 0, 580)
-MainFrame.Position = UDim2.new(0.5, -350, 0.5, -290)
 MainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 80)
 MainFrame.BorderSizePixel = 4
 MainFrame.BorderColor3 = Color3.fromRGB(255, 0, 0)
+
+-- Auto adjust size for PC vs Mobile
+local isMobile = game:GetService("UserInputService").TouchEnabled and not game:GetService("UserInputService").KeyboardEnabled
+
+if isMobile then
+    MainFrame.Size = UDim2.new(0.95, 0, 0.88, 0)
+    MainFrame.Position = UDim2.new(0.025, 0, 0.06, 0)
+else
+    MainFrame.Size = UDim2.new(0, 720, 0, 600)
+    MainFrame.Position = UDim2.new(0.5, -360, 0.5, -300)
+end
+
 MainFrame.Parent = ScreenGui
 
 local Title = Instance.new("TextLabel")
-Title.Size = UDim2.new(1, 0, 0, 60)
+Title.Size = UDim2.new(1, 0, 0, 55)
 Title.BackgroundColor3 = Color3.fromRGB(0, 0, 100)
-Title.Text = "🌌 ULTRA DELTAKIDD HUB V2.3"
+Title.Text = "🌌 ULTRA DELTAKIDD HUB V2.4"
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title.TextSize = 22
+Title.TextSize = isMobile and 18 or 22
 Title.Font = Enum.Font.GothamBold
 Title.Parent = MainFrame
 
--- Scanner Toggle
 local ToggleBtn = Instance.new("TextButton")
-ToggleBtn.Size = UDim2.new(0.9, 0, 0, 50)
-ToggleBtn.Position = UDim2.new(0.05, 0, 0, 80)
+ToggleBtn.Size = UDim2.new(0.95, 0, 0, 55)
+ToggleBtn.Position = UDim2.new(0.025, 0, 0, 65)
 ToggleBtn.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
 ToggleBtn.Text = "ENABLE LIVE ARG SCANNER"
 ToggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-ToggleBtn.TextSize = 18
+ToggleBtn.TextSize = isMobile and 16 or 18
 ToggleBtn.Font = Enum.Font.GothamBold
 ToggleBtn.Parent = MainFrame
 
--- Log Area
 local Scrolling = Instance.new("ScrollingFrame")
-Scrolling.Size = UDim2.new(0.9, 0, 0, 320)
-Scrolling.Position = UDim2.new(0.05, 0, 0, 150)
+Scrolling.Size = UDim2.new(0.95, 0, 0, isMobile and 260 or 320)
+Scrolling.Position = UDim2.new(0.025, 0, 0, 130)
 Scrolling.BackgroundColor3 = Color3.fromRGB(0, 0, 60)
-Scrolling.ScrollBarThickness = 10
+Scrolling.ScrollBarThickness = 8
 Scrolling.Parent = MainFrame
 
 local LogLabel = Instance.new("TextLabel")
-LogLabel.Size = UDim2.new(1, -20, 0, 0)
+LogLabel.Size = UDim2.new(1, -16, 0, 0)
 LogLabel.BackgroundTransparency = 1
 LogLabel.Text = "Enable scanner and play the game...\nArguments will appear here."
 LogLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 LogLabel.TextXAlignment = Enum.TextXAlignment.Left
 LogLabel.TextYAlignment = Enum.TextYAlignment.Top
 LogLabel.TextWrapped = true
-LogLabel.TextSize = 15
+LogLabel.TextSize = isMobile and 14 or 15
 LogLabel.Font = Enum.Font.Gotham
 LogLabel.Parent = Scrolling
 
--- Copy Buttons
 local CopyLatestBtn = Instance.new("TextButton")
-CopyLatestBtn.Size = UDim2.new(0.42, 0, 0, 45)
-CopyLatestBtn.Position = UDim2.new(0.05, 0, 0, 490)
+CopyLatestBtn.Size = UDim2.new(0.46, 0, 0, 50)
+CopyLatestBtn.Position = UDim2.new(0.025, 0, 0, isMobile and 400 or 470)
 CopyLatestBtn.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-CopyLatestBtn.Text = "📋 COPY LATEST"
+CopyLatestBtn.Text = "COPY LATEST"
 CopyLatestBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+CopyLatestBtn.TextSize = isMobile and 15 or 16
 CopyLatestBtn.Parent = MainFrame
 
 local CopyAllBtn = Instance.new("TextButton")
-CopyAllBtn.Size = UDim2.new(0.42, 0, 0, 45)
-CopyAllBtn.Position = UDim2.new(0.53, 0, 0, 490)
+CopyAllBtn.Size = UDim2.new(0.46, 0, 0, 50)
+CopyAllBtn.Position = UDim2.new(0.515, 0, 0, isMobile and 400 or 470)
 CopyAllBtn.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-CopyAllBtn.Text = "📋 COPY ALL LOGS"
+CopyAllBtn.Text = "COPY ALL LOGS"
 CopyAllBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+CopyAllBtn.TextSize = isMobile and 15 or 16
 CopyAllBtn.Parent = MainFrame
 
--- Payload
 local PayloadBox = Instance.new("TextBox")
-PayloadBox.Size = UDim2.new(0.9, 0, 0, 45)
-PayloadBox.Position = UDim2.new(0.05, 0, 0, 550)
+PayloadBox.Size = UDim2.new(0.95, 0, 0, 50)
+PayloadBox.Position = UDim2.new(0.025, 0, 0, isMobile and 460 or 530)
 PayloadBox.PlaceholderText = "Enter payload (Sword, 100, true...)"
 PayloadBox.BackgroundColor3 = Color3.fromRGB(0, 0, 60)
 PayloadBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-PayloadBox.TextSize = 16
+PayloadBox.TextSize = isMobile and 15 or 16
 PayloadBox.Parent = MainFrame
 
 local InjectBtn = Instance.new("TextButton")
-InjectBtn.Size = UDim2.new(0.9, 0, 0, 45)
-InjectBtn.Position = UDim2.new(0.05, 0, 0, 605)
+InjectBtn.Size = UDim2.new(0.95, 0, 0, 50)
+InjectBtn.Position = UDim2.new(0.025, 0, 0, isMobile and 520 or 590)
 InjectBtn.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-InjectBtn.Text = "🔥 SINGLE INJECT"
+InjectBtn.Text = "SINGLE INJECT"
 InjectBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+InjectBtn.TextSize = isMobile and 16 or 18
 InjectBtn.Parent = MainFrame
 
 -- Auto set remote
@@ -150,16 +157,16 @@ local oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
 
             local text = ""
             for _, log in ipairs(State.SpyLogs) do
-                text = text .. "🕒 " .. log.Time .. " | " .. log.RemoteName .. "\n📂 " .. log.FullPath .. "\n📊 " .. log.ArgsStr .. "\n\n"
+                text = text .. log.Time .. " | " .. log.RemoteName .. "\n" .. log.ArgsStr .. "\n\n"
             end
             LogLabel.Text = text
-            Scrolling.CanvasSize = UDim2.new(0, 0, 0, LogLabel.TextBounds.Y + 50)
+            Scrolling.CanvasSize = UDim2.new(0, 0, 0, LogLabel.TextBounds.Y + 40)
         end)
     end
     return oldNamecall(self, ...)
 end)
 
--- Button functions
+-- Button Connections
 ToggleBtn.MouseButton1Click:Connect(function()
     State.Logging = not State.Logging
     ToggleBtn.Text = State.Logging and "SCANNER ENABLED ✓" or "ENABLE LIVE ARG SCANNER"
@@ -197,4 +204,4 @@ InjectBtn.MouseButton1Click:Connect(function()
     pcall(function() State.LastRemote:FireServer(unpack(args)) end)
 end)
 
-print("ULTRA DELTAKIDD HUB V2.3 LOADED - setclipboard fixed")
+print("ULTRA DELTAKIDD HUB V2.4 LOADED - PC + Mobile Compatible")
